@@ -1,12 +1,37 @@
-*.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Created by https://www.gitignore.io
+#
+# ### Vim ###
+# [._]*.s[a-w][a-z]
+# [._]s[a-w][a-z]
+# *.un~
+# Session.vim
+# .netrwhist
+# *~
+# *.swp
+#
+#
+# ### Java ###
+# *.class
+#
+# # Mobile Tools for Java (J2ME)
+# .mtj.tmp/
+#
+# # Package Files #
+# *.jar
+# *.war
+# *.ear
+#
+# # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# hs_err_pid*
+#
+#
+# ### Linux ###
+# *~
+#
+# # KDE directory preferences
+# .directory
+#
+# # Linux trash folder which might appear on any partition or disk
+# .Trash-*
+#
+#
