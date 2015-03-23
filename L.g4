@@ -12,7 +12,6 @@ HashMap memory = new HashMap();
 prog:   stat+ ;
 
 stat:   expr NEWLINE {System.out.println($expr.value);}
-    |   LPAREN STRING LPAREN expr RPAREN RPAREN NEWLINE {System.out.println($STRING.text + ' ' + $expr.value);}
     |   NEWLINE
     ;
 
@@ -37,6 +36,12 @@ expr returns [double value]
     |   LPAREN SIN {System.err.println("sin only takes 1 argument");}
         ( var )+
         RPAREN
+    |   LPAREN COS {$value = 0;}
+        ( l=expr {$value = Math.cos($l.value);})
+        RPAREN
+    |   LPAREN COS {System.err.println("cos only takes 1 argument");}
+        ( var )+
+        RPAREN
     |   LPAREN SQRT {$value = 0;}
         ( m=expr {$value = Math.sqrt($m.value);})
         RPAREN
@@ -46,6 +51,9 @@ expr returns [double value]
     |   LPAREN STRING g = expr RPAREN {
             $value = $g.value;
             System.out.println($STRING.text + " " + $g.value);
+        }
+    |   LPAREN letsinglevar IN p=expr RPAREN{
+            $value = $p.value;
         }
     |   n=var {$value = $n.value;}
     ;
@@ -59,22 +67,33 @@ var returns [double value]
             String removedCommas = ($NUMBER.text).replace(",", "");
             $value = Double.parseDouble(removedCommas);
         }
-    |   ID
+    |   SINGLEVAR
         {
-        Integer v = (Integer)memory.get($ID.text);
-        if ( v!=null ) $value = v.intValue();
-        else System.err.println("undefined variable "+$ID.text);
+        Double v = (Double)memory.get($SINGLEVAR.text);
+        if ( v!=null ) $value = v.doubleValue();
+        else System.err.println("undefined variable "+$SINGLEVAR.text);
         }
-    |   LPAREN  e=expr RPAREN  {$value = $e.value;}
+    ;
+
+letsinglevar 
+    :   LET SINGLEVAR BE h = expr{
+        memory.put($SINGLEVAR.text, new Double($h.value));
+        }
+            
     ;
 
 STRING
-    : '"' (~[\r\n"] | '""')* '"'
+    :   '"' (~[\r\n"] | '""')* '"'
     ;
 
+
+LET: 'let';
+IN: 'in';
+BE: 'be';
 SIN: 'sin';
 COS: 'cos';
 SQRT: 'sqrt';
+SINGLEVAR: ('a'..'z'|'A'..'Z');
 ID  :   ('a'..'z'|'A'..'Z')+ ;
 NUMBER :  ('0'..'9'|',')+ ('.' ('0'..'9')+)?;
 NEWLINE:'\r'? '\n' ;
