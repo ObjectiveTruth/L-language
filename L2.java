@@ -16,6 +16,11 @@ public class L2 {
         // Parse the token stream using the parser
         L2Parser parser = new L2Parser(tokens);
 
+        System.out.println("L2 is a major improvement over L, allowing if and else statements");
+        System.out.println("Usage: if <expr> <op> <expr> then <expr> else <expr>");
+        System.out.println("<op> can be !=, ==, >, <");
+        System.out.println("===========Enjoy!==========");
+
         // Start parsing, starting with the `start` rule.
         parser.prog();
     }
