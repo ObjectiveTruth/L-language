@@ -11,34 +11,54 @@ HashMap memory = new HashMap();
 
 prog:   stat+ ;
 
-stat:   LPAREN expr RPAREN NEWLINE {System.out.println($expr.value);}
+stat:   expr NEWLINE {System.out.println($expr.value);}
+    |   LPAREN STRING LPAREN expr RPAREN RPAREN NEWLINE {System.out.println($STRING.text + ' ' + $expr.value);}
     |   NEWLINE
     ;
 
 expr returns [double value]
-    :   MULTIPLY {$value = 1;}
-        ( e=var {$value *= $e.value;})* 
-    |   PLUS {$value = 0;}
-        ( e=var {$value += $e.value;})* 
-    |   MINUS {$value = 0;}
-        ( e=var {$value =  $e.value;}) 
-        ( e=var {$value -= $e.value;})* 
-    |   DIVIDE {$value = 0;}
-        ( e=var {$value =  $e.value;}) 
-        ( e=var {$value /= $e.value;})* 
-    |   SIN {$value = 0;}
-        ( e=var {$value = Math.sin($e.value);})
-    |   SIN {System.err.println("sin only takes 1 argument");}
+    :   LPAREN MULTIPLY {$value = 1;}
+        ( f = expr {$value *= $f.value;})+ 
+        RPAREN
+    |   LPAREN PLUS {$value = 0;}
+        ( e=expr {$value += $e.value;})+ 
+        RPAREN
+    |   LPAREN MINUS {$value = 0;}
+        ( h=expr {$value =  $h.value;}) 
+        ( i=expr {$value -= $i.value;})* 
+        RPAREN
+    |   LPAREN DIVIDE {$value = 0;}
+        ( j=expr {$value =  $j.value;}) 
+        ( k=expr {$value /= $k.value;})* 
+        RPAREN
+    |   LPAREN SIN {$value = 0;}
+        ( l=expr {$value = Math.sin($l.value);})
+        RPAREN
+    |   LPAREN SIN {System.err.println("sin only takes 1 argument");}
         ( var )+
-    |   e=var {$value = $e.value;}
-        (   PLUS e=var {$value += $e.value;}
-        |   MINUS e=var {$value -= $e.value;}
-        )*
+        RPAREN
+    |   LPAREN SQRT {$value = 0;}
+        ( m=expr {$value = Math.sqrt($m.value);})
+        RPAREN
+    |   LPAREN SQRT {System.err.println("sqrt only takes 1 argument");}
+        ( var )+
+        RPAREN
+    |   LPAREN STRING g = expr RPAREN {
+            $value = $g.value;
+            System.out.println($STRING.text + " " + $g.value);
+        }
+    |   n=var {$value = $n.value;}
     ;
 
 var returns [double value]
-    :   NUMBER {$value = Double.parseDouble($NUMBER.text);}
-    |   '-'NUMBER {$value = -Integer.parseInt($NUMBER.text);}
+    :   NUMBER {
+            String removedCommas = ($NUMBER.text).replace(",", "");
+            $value = Double.parseDouble(removedCommas);
+        }
+    |   '-'NUMBER {
+            String removedCommas = ($NUMBER.text).replace(",", "");
+            $value = Double.parseDouble(removedCommas);
+        }
     |   ID
         {
         Integer v = (Integer)memory.get($ID.text);
@@ -48,13 +68,19 @@ var returns [double value]
     |   LPAREN  e=expr RPAREN  {$value = $e.value;}
     ;
 
+STRING
+    : '"' (~[\r\n"] | '""')* '"'
+    ;
+
 SIN: 'sin';
 COS: 'cos';
+SQRT: 'sqrt';
 ID  :   ('a'..'z'|'A'..'Z')+ ;
-NUMBER :  ('0'..'9')+ ('.' ('0'..'9')+)?;
+NUMBER :  ('0'..'9'|',')+ ('.' ('0'..'9')+)?;
 NEWLINE:'\r'? '\n' ;
 LPAREN: '(';
 RPAREN: ')';
+DBLQUOTES: '"';
 PLUS: '+';
 MULTIPLY: '*';
 DIVIDE: '/';
