@@ -1,4 +1,4 @@
-grammar L;
+grammar L2;
 
 @header {
 import java.util.HashMap;
@@ -11,7 +11,7 @@ HashMap memory = new HashMap();
 
 prog:   stat+ ;
 
-stat:   expr NEWLINE {System.out.println($expr.value);}
+stat:   expr NEWLINE
     |   NEWLINE
     ;
 
