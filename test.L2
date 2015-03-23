@@ -1,0 +1,4 @@
+(if 5 > 1 then ("True that 5.0 is greater than" 1) else 0)
+(if 1 < 5 then ("True that 1.0 is less than" 5) else 0)
+(if 5 == 5 then ("True that 5.0 is equal to" 5) else 0)
+(if 5 != 1 then ("True that 5.0 is NOT equal to " 1) else 0)
