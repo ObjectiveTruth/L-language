@@ -1,10 +1,57 @@
-# L-language Toy Example
+# L-language Toy Example and JVM bytecode
 Calculator like language with heavy inspiration from Lisp
 built ontop of java for practice
+
+##JVM bytecode integration using Jasmin
+```Src2.g4``` describes a grammar that outputs java byte code
+When used with ```Compiler2.java``` it will generate a ```class``` file.
+Can be run using ```java sample.class```
+
+##Usage and Setup
+
+* Install Java
+
+```sudo apt-get install java-default```
+
+* Download antlr4
+
+Follow instructions found at https://theantlrguy.atlassian.net/wiki/display/ANTLR4/Getting+Started+with+ANTLR+v4
+
+* Download Jasmin jar
+
+Get the jar from http://jasmin.sourceforge.net/
+
+* Compile and run
+
+Make sure you have the following in the current directory
+
+1. Compiler2.java
+2. Src2.g4
+3. jasmin.jar
+4. sample.src
+
+Run the ```fastcompile``` script (make sure you ```chmod 755 fastcompile```)
+
+or without the script
+
+Run ```java -Xmx500M -cp "/usr/local/lib/antlr-4.5-complete.jar:$CLASSPATH" org.antlr.v4.Tool Src2.g4 && javac Src2*.java && javac Compiler2*.java && java Compiler2 sample.src > sample.j && java -jar jasmin.jar sample.j && java sample```
+
+###Output should be:
+```
+1
+1
+1
+2
+2
+1
+2
+2
+```
 
 ##Technologies
 * [vim](http://www.vim.org/)
 * [antlr4](http://www.antlr.org/)
+* [jasmin](http://jasmin.sourceforge.net/)
 
 
 ##Discussion:
